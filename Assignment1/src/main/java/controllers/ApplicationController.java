@@ -16,6 +16,8 @@
 
 package controllers;
 
+import models.gameState;
+import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 
@@ -25,12 +27,32 @@ import com.google.inject.Singleton;
 @Singleton
 public class ApplicationController {
 
-    public Result index() {
-        return Results.html();
-    }
-
     public Result acesUp() {
         return Results.html().template("views/AcesUp/AcesUp.flt.html");
+    }
+
+    public Result acesUpGamestateGet(){
+        gameState gs = new gameState();
+
+        return Results.json().render(gs);
+    }
+
+    public Result acesUpGamestatePost(Context context, gameState gs) {
+        if(gs.action.contentEquals("deal")){
+            gs.deal();
+        }
+        if(gs.action.contentEquals("discard")){
+            gs.discard(gs.item1);
+        }
+        if(gs.action.contentEquals("move")){
+            gs.move(gs.item2,gs.item3);
+        }
+
+        return Results.json().render(gs);
+    }
+
+    public Result index() {
+        return Results.html();
     }
 
 }

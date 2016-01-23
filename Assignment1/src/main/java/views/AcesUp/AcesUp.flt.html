@@ -5,6 +5,18 @@
 
 <body>
 
+
+<button id="dealButton">Deal</button>
+
+<br>
+<input type="text" id="discText"  />
+<button id="discardButton">Discard</button>
+
+<br>
+<input type="text" id="moveText1"  />
+<input type="text" id="moveText2"  />
+<button id="moveButton">Move</button>
+
 <table>
     <tr class="title">
         <td>Column1</td>
@@ -15,9 +27,9 @@
 
     <tr><td class="columnOfCards" id="c1">
         <table>
-            <tr><td class="cardLocation l0"></td></tr>
-            <tr><td class="cardLocation l1"></td></tr>
-            <tr><td class="cardLocation l2"></td></tr>
+            <tr><td class="cardLocation"></td></tr>
+            <tr><td class="cardLocation"></td></tr>
+            <tr><td class="cardLocation"></td></tr>
             <tr><td class="cardLocation"></td></tr>
             <tr><td class="cardLocation"></td></tr>
             <tr><td class="cardLocation"></td></tr>
@@ -33,9 +45,9 @@
     </td>
         <td class="columnOfCards" id="c2">
             <table>
-                <tr><td class="cardLocation l0"></td></tr>
-                <tr><td class="cardLocation l1"></td></tr>
-                <tr><td class="cardLocation l2"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
@@ -51,9 +63,9 @@
         </td>
         <td class="columnOfCards" id="c3">
             <table>
-                <tr><td class="cardLocation l0"></td></tr>
-                <tr><td class="cardLocation l1"></td></tr>
-                <tr><td class="cardLocation l2"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
@@ -69,9 +81,9 @@
         </td>
         <td class="columnOfCards" id="c4">
             <table>
-                <tr><td class="cardLocation l0"></td></tr>
-                <tr><td class="cardLocation l1"></td></tr>
-                <tr><td class="cardLocation l2"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
+                <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
                 <tr><td class="cardLocation"></td></tr>
@@ -88,8 +100,105 @@
     </tr>
 </table>
 
-<button id="dealButton">Deal</button>
 
 
 </body>
 </html>
+
+
+<script>
+
+var game;
+
+function display(gs) {
+    var c1 = (((document.getElementById("c1")).getElementsByTagName("table"))[0]).getElementsByTagName("tr");
+    var c2 = (((document.getElementById("c2")).getElementsByTagName("table"))[0]).getElementsByTagName("tr");
+    var c3 = (((document.getElementById("c3")).getElementsByTagName("table"))[0]).getElementsByTagName("tr");
+    var c4 = (((document.getElementById("c4")).getElementsByTagName("table"))[0]).getElementsByTagName("tr");
+
+    var pos = 0;
+    while (pos<game.col1.length()){
+        ((c1[pos]).getElementsByTagName("td"))[0] = gs.col1[pos];
+        pos++;
+    }
+    pos=0;
+    while (pos<game.col2.length()){
+        ((c2[pos]).getElementsByTagName("td"))[0] = gs.col2[pos];
+        pos++;
+    }
+    pos=0;
+    while (pos<game.col3.length()){
+        ((c3[pos]).getElementsByTagName("td"))[0] = gs.col3[pos];
+        pos++;
+    }
+    pos=0;
+    while (pos<game.col3.length()){
+        ((c3[pos]).getElementsByTagName("td"))[0] = gs.col3[pos];
+        pos++;
+    }
+
+}
+
+$.getJSON("http://localhost:8080/AcesUp.json", function( data ) {
+display(data);
+game = data;
+});
+
+
+$("#dealButton").click(function(){
+
+game.action = "deal";
+
+$.ajax({
+  type: "POST",
+  url: "/AcesUp.json",
+  data: JSON.stringify(game),
+  success: function(data, status){console.log("Data: " + data + "\nStatus: " + status);
+        game = data;
+        display(data);},
+  contentType:"application/json; charset=utf-8",
+  dataType:"json",
+});
+});
+
+
+
+
+$("#discardButton").click(function(){
+
+game.action = "discard";
+game.item1 = $("#discText").val();
+
+$.ajax({
+  type: "POST",
+  url: "/AcesUp.json",
+  data: JSON.stringify(game),
+  success: function(data, status){console.log("Data: " + data + "\nStatus: " + status);
+        game = data;
+        display(data);},
+  contentType:"application/json; charset=utf-8",
+  dataType:"json",
+});
+});
+
+
+
+$("#moveButton").click(function(){
+
+game.action = "move";
+game.item2 = $("#moveText1").val();
+game.item3 = $("#moveText2").val();
+
+$.ajax({
+  type: "POST",
+  url: "/AcesUp.json",
+  data: JSON.stringify(game),
+  success: function(data, status){console.log("Data: " + data + "\nStatus: " + status);
+        game = data;
+        display(data);},
+  contentType:"application/json; charset=utf-8",
+  dataType:"json",
+});
+});
+
+</script>
